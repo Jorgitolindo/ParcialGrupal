@@ -1,0 +1,57 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.ctxt
+
+# Maven
+**/target/
+**/pom.xml.tag
+**/pom.xml.releaseBackup
+**/pom.xml.versionsBackup
+**/pom.xml.next
+**/release.properties
+**/dependency-reduced-pom.xml
+
+# Eclipse
+.classpath
+.project
+.settings/
+**/.settings/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+**/.idea/
+
+# VS Code
+.vscode/
+**/.vscode/
+
+# Spring Boot
+**/HELP.md
+**/mvnw
+**/mvnw.cmd
+**/.mvn/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+**/*.log
+
+# Temporary files
+**/tmp/
+**/temp/

@@ -1,0 +1,231 @@
+# ============================================
+# TIPOS DE DATOS (Types)
+# ============================================
+
+"""
+Usuario en el sistema (ADMIN o CLIENTE)
+"""
+type Usuario {
+    id: ID!
+    nombre: String!
+    apellido: String!
+    email: String!
+    rol: String!
+    activo: Boolean!
+    createdAt: String!
+}
+
+"""
+Cliente (perfil adicional para usuarios con rol CLIENTE)
+"""
+type Cliente {
+    id: ID!
+    codigoCliente: String!
+    direccion: String
+    telefono: String
+    documentoIdentidad: String
+    createdAt: String!
+    usuario: Usuario!
+}
+
+"""
+Respuesta de autenticación (login)
+"""
+type AuthResponse {
+    id: ID
+    nombre: String
+    apellido: String
+    email: String
+    rol: String
+    activo: Boolean
+    mensaje: String!
+}
+
+# ============================================
+# INPUTS (Datos de entrada)
+# ============================================
+
+"""
+Input para registrar un nuevo usuario
+Si rol es CLIENTE, los campos adicionales son opcionales
+"""
+input RegistroUsuarioInput {
+    nombre: String!
+    apellido: String!
+    email: String!
+    password: String!
+    rol: String!
+    direccion: String
+    telefono: String
+    documentoIdentidad: String
+}
+
+"""
+Input para actualizar un usuario
+"""
+input ActualizarUsuarioInput {
+    nombre: String
+    apellido: String
+    email: String
+}
+
+"""
+Input para crear un perfil de cliente
+"""
+input ClienteInput {
+    usuarioId: ID!
+    codigoCliente: String!
+    direccion: String
+    telefono: String
+    documentoIdentidad: String
+}
+
+"""
+Input para actualizar un cliente
+"""
+input ActualizarClienteInput {
+    direccion: String
+    telefono: String
+    documentoIdentidad: String
+}
+
+"""
+Input para login
+"""
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+# ============================================
+# QUERIES (Consultas - solo lectura)
+# ============================================
+
+type Query {
+    # ===== USUARIOS =====
+    
+    """
+    Obtiene todos los usuarios del sistema
+    Requiere: Rol ADMIN
+    """
+    obtenerTodosLosUsuarios(usuarioEmail: String!): [Usuario!]!
+    
+    """
+    Obtiene un usuario por su ID
+    Requiere: Rol ADMIN o ser el mismo usuario
+    """
+    obtenerUsuarioPorId(id: ID!, usuarioEmail: String!): Usuario
+    
+    """
+    Obtiene un usuario por su email
+    Requiere: Rol ADMIN
+    """
+    obtenerUsuarioPorEmail(email: String!): Usuario
+    
+    """
+    Obtiene todos los usuarios con un rol específico
+    Requiere: Rol ADMIN
+    """
+    obtenerUsuariosPorRol(rol: String!): [Usuario!]!
+    
+    """
+    Obtiene el perfil del usuario autenticado
+    Requiere: Estar autenticado
+    """
+    obtenerMiPerfil: Usuario
+    
+    # ===== CLIENTES =====
+    
+    """
+    Obtiene todos los clientes
+    Requiere: Rol ADMIN
+    """
+    obtenerTodosLosClientes: [Cliente!]!
+    
+    """
+    Obtiene un cliente por su ID
+    Requiere: Rol ADMIN o ser el mismo cliente
+    """
+    obtenerClientePorId(id: ID!): Cliente
+    
+    """
+    Obtiene un cliente por su código
+    Requiere: Rol ADMIN
+    """
+    obtenerClientePorCodigo(codigo: String!): Cliente
+    
+    """
+    Obtiene un cliente por el ID de su usuario
+    Requiere: Rol ADMIN o ser el mismo usuario
+    """
+    obtenerClientePorUsuarioId(usuarioId: ID!): Cliente
+    
+    """
+    Obtiene el perfil de cliente del usuario autenticado
+    Requiere: Estar autenticado y tener rol CLIENTE
+    """
+    obtenerMiPerfilCliente: Cliente
+}
+
+# ============================================
+# MUTATIONS (Modificaciones - escritura)
+# ============================================
+
+type Mutation {
+    # ===== AUTENTICACIÓN =====
+    
+    """
+    Login simple sin JWT
+    Valida credenciales y devuelve información del usuario
+    El cliente debe guardar email y rol para usar en otras operaciones
+    """
+    login(input: LoginInput!): AuthResponse!
+    
+    # ===== USUARIOS =====
+    
+    """
+    Registra un nuevo usuario en el sistema
+    Público: Cualquiera puede registrarse como CLIENTE
+    Solo ADMIN puede crear otros ADMIN
+    """
+    registrarUsuario(input: RegistroUsuarioInput!): Usuario!
+    
+    """
+    Actualiza la información de un usuario
+    Requiere: Rol ADMIN o ser el mismo usuario
+    """
+    actualizarUsuario(id: ID!, input: ActualizarUsuarioInput!): Usuario!
+    
+    """
+    Cambia la contraseña de un usuario
+    Requiere: Ser el mismo usuario
+    """
+    cambiarPassword(id: ID!, nuevaPassword: String!): Usuario!
+    
+    """
+    Activa o desactiva un usuario
+    Requiere: Rol ADMIN
+    """
+    cambiarEstadoUsuario(id: ID!, activo: Boolean!): Usuario!
+    
+    # ===== CLIENTES =====
+    
+    """
+    Crea un perfil de cliente para un usuario
+    Requiere: Rol ADMIN o ser el mismo usuario (con rol CLIENTE)
+    """
+    crearCliente(input: ClienteInput!): Cliente!
+    
+    """
+    Actualiza la información de un cliente
+    Requiere: Rol ADMIN o ser el mismo cliente
+    """
+    actualizarCliente(id: ID!, input: ActualizarClienteInput!): Cliente!
+    
+    """
+    Genera un código de cliente único automáticamente
+    Útil para obtener el siguiente código disponible
+    Requiere: Rol ADMIN
+    """
+    generarCodigoCliente: String!
+}
