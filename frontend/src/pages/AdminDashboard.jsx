@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
 import { useNavigate } from 'react-router-dom';
 import { getSession, clearSession } from '../utils/session';
+
 import '../App.css';
 
 const OBTENER_USUARIOS = gql`
@@ -40,6 +41,7 @@ const OBTENER_CLIENTES = gql`
 export function AdminDashboard() {
   const navigate = useNavigate();
   const session = getSession();
+  const [activeTab, setActiveTab] = useState('usuarios');
 
   useEffect(() => {
     if (!session || session.rol !== 'ADMIN') {
@@ -80,7 +82,22 @@ export function AdminDashboard() {
           Cerrar sesión
         </button>
       </header>
+      <div className="dashboard-tabs">
+    <button
+      className={activeTab === 'usuarios' ? 'tab-button active' : 'tab-button'}
+      onClick={() => setActiveTab('usuarios')}
+    >
+      Usuarios
+    </button>
+    <button
+      className={activeTab === 'clientes' ? 'tab-button active' : 'tab-button'}
+      onClick={() => setActiveTab('clientes')}
+    >
+      Clientes
+    </button>
+  </div>
 
+  {activeTab === 'usuarios' && (
       <section className="dashboard-section">
         <h2>Usuarios registrados</h2>
         {loadingUsuarios && <div className="loading">Cargando usuarios…</div>}
@@ -110,7 +127,8 @@ export function AdminDashboard() {
           <p className="empty-state">No hay usuarios registrados.</p>
         )}
       </section>
-
+    )}
+{activeTab === 'clientes' && (
       <section className="dashboard-section">
         <h2>Clientes</h2>
         {loadingClientes && <div className="loading">Cargando clientes…</div>}
@@ -142,6 +160,7 @@ export function AdminDashboard() {
           <p className="empty-state">No hay clientes registrados.</p>
         )}
       </section>
+    )}
     </div>
   );
 }

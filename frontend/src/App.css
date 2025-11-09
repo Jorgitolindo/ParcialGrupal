@@ -366,3 +366,32 @@ button:disabled {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.dashboard-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.tab-button {
+  padding: 0.8rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(37, 99, 235, 0.35);
+  background: rgba(37, 99, 235, 0.08);
+  color: #1d4ed8;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.tab-button:hover {
+  background: rgba(37, 99, 235, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 20px -14px rgba(37, 99, 235, 0.6);
+}
+
+.tab-button.active {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-color: transparent;
+  color: #ffffff;
+}
